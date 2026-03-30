@@ -1,5 +1,109 @@
-{
-  "dependencies": {
-    "axios": "^1.13.5"
+import { useState } from "react"
+
+function ReactUpdate(){
+    const dane = [  {
+    id: 1,
+    title: "Nauczyć się React",
+    description: "Hooki, komponenty, props",
+    priority: "high",
+    completed: false
+  },
+  {
+    id: 2,
+    title: "Zrobić projekt",
+    description: "Aplikacja TODO",
+    priority: "high",
+    completed: false
+  },
+  {
+    id: 3,
+    title: "Powtórzyć JavaScript",
+    description: "tablice, obiekty, map, filter",
+    priority: "medium",
+    completed: true
+  },
+  {
+    id: 4,
+    title: "Przeczytać dokumentację React",
+    description: "React docs",
+    priority: "low",
+    completed: false
+  },
+  {
+    id: 5,
+    title: "Ćwiczyć React codziennie",
+    description: "Minimum 1h",
+    priority: "high",
+    completed: false
+  },
+  {
+    id: 6,
+    title: "Zrozumieć useEffect",
+    description: "Lifecycle komponentu",
+    priority: "medium",
+    completed: false
   }
+
+    ]
+    const [zadania, setZadania] = useState(dane)
+    const [title, setTitle] = useState("")
+    const [description, setDescription] = useState("")
+    const [priority, setPriority] = useState("Low")
+    const [completed, setCompleted] = useState(false)
+    const [editMode, setEditMode] = useState(false)
+    const [newPriotity, setNewPriority] = useState()
+    const wyswietlDane = zadania.map((el, index)=><>
+    <p>{el.id}. tytuł: {el.title} </p>
+    <p>Opis: {el.description}</p> 
+    <p>Priorytet: {el.priority}</p>
+    <p>Status: {el.completed?<>Wykonane</>:<>Niewykonane</>}</p>
+    {el.completed?<></>:<><button id="edit" onClick={()=>{setEditMode(!editMode)}}>Edytuj</button></>}
+    {editMode & !completed ? <>
+            <select onChange={(e)=>{setNewPriority(e.target.value)}}>
+                <option value="low">Low</option>
+                <option value="medium">Medium</option>
+                <option value="high">High</option>
+            </select>
+            <button onClick={()=>{
+                let copy = [...zadania]
+                copy[index].priority = newPriotity
+                setZadania(copy)
+            }}>Zatwierdź</button>
+    </>:<></>}
+    <button id="delete" onClick={()=>{
+        let copy = [...zadania]
+        copy.splice(index, 1)
+        setZadania(copy)
+    }}>Usuń</button>
+    </>)
+    return(<>
+        {wyswietlDane}<br/>
+        <form onSubmit={(e)=>{e.preventDefault()}}>
+        <input placeholder="Tytuł" onChange={(e)=>{setTitle(e.target.value)}}/><br/>
+        <input placeholder="Opis" onChange={(e)=>{setDescription(e.target.value)}}/><br/>
+        <select onChange={(e)=>{setPriority(e.target.value)}}>
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select><br/>
+        <label htmlFor="status">Wykonane</label>
+	    <input type="checkbox" id="status" onClick={()=>{setCompleted(!completed)}}/><br/>
+        <button onClick={()=>{
+            let dl = zadania.length
+            dl--
+            let nr=parseInt(zadania[dl].id) + 1
+            let nowy = {
+                id: nr,
+                title: title,
+                description: description,
+                priority: priority,
+                completed: completed
+            }
+            let copy = zadania.slice()
+            copy.push(nowy)
+            setZadania(copy)
+        }}>Dodaj zadanie</button>
+      </form>
+    </>)
 }
+export default ReactUpdate;
